@@ -91,8 +91,8 @@ Partial credits will be given for incomplete efforts. However, a program that ca
 13. Report (10)
 14. Bonus points (you can get bonus points only if you have everything else working (or very close to
 working))
-   * Support multiple pipes in one command. (10)
-   * killcommand delivers signals to background processes. The kill command has the format: kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID is an integer that specifies the job that should receive the signal. (5)
+    * Support multiple pipes in one command. (10)
+    * killcommand delivers signals to background processes. The kill command has the format: kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID is an integer that specifies the job that should receive the signal. (5)
 
 ## MATERIALS TO BE HANDED IN
 
