@@ -50,37 +50,31 @@ in quash should set the variable PATH to contain two directories, */usr/bin* and
     * where JOBID is a unique positive integer quash assigns to the job to identify it, PID is the PID of the child process used for the job, and COMMAND is the command used to invoke the job.
 
 
-- When a command is run in the background, quash should print:
+* When a command is run in the background, quash should print:
+```bash
+   [JOBID] PID running in background
+```
+* When a background command finishes, quash should print:
+```bash
+   [JOBID] PID finished COMMAND
+```
+* Quash should implement I/O redirection. The ‘<’ character is used to redirect the standard input from a file. The ‘>’ character is used to redirect the standard output to a file. For example, ‘ls> a’ sends to results of *ls* to file *a*. Explore the use of **freopen()** to achieve I/O redirection.
+* Quash should implement the pipe (|) command. e.g. ‘cat myprog.c|more’.
+* Quash should support reading commands interactively (with a prompt) or reading a set of commands stored in a file that is redirected from standard input, as in:
+```bash
+   bash> quash < commands.txt
+```
 
-```
-[JOBID] PID running in background
-```
-- When a background command finishes, quash should print:
-
-```
-[JOBID] PID finished COMMAND
-```
-
-- Quash should implement I/O redirection. The ‘<’ character is used to redirect the standard input
-    from a file. The ‘>’ character is used to redirect the standard output to a file. For example, ‘ls>
-    a’ sends to results oflsto filea. Explore the use offreopen()to achieve I/O redirection.
-- Quash should implement the pipe (|) command. e.g. ‘cat myprog.c|more’.
-- Quash should support reading commands interactively (with a prompt) or reading a set of com-
-    mands stored in a file that is redirected from standard input, as in:
-
-```
-bash> quash < commands.txt
-```
 ## GRADING POLICY
 
 Partial credits will be given for incomplete efforts. However, a program that cannot compile will get
 0 points. Point breakdown for features is below:
    1. Run executables without arguments (10)
    2. Run executables with arguments (10)
-   3. setfor HOME and PATH work properly (5)
-   4. exitandquitwork properly (5)
-   5. cd(with and without arguments) works properly (5)
-   6. PATHworks properly. Give error messages when the executable is not found (10)
+   3. *set* for HOME and PATH work properly (5)
+   4. *exit* and *quit* work properly (5)
+   5. *cd* (with and without arguments) works properly (5)
+   6. *PATH* works properly. Give error messages when the executable is not found (10)
    7. Child processes inherit the environment (5)
    8. Allow background/foreground execution (&) (5)
    9. Printing/reporting of background processes, (including thejobscommand) (10)
@@ -90,19 +84,15 @@ Partial credits will be given for incomplete efforts. However, a program that ca
    13. Report (10)
    14. Bonus points (you can get bonus points only if you have everything else working (or very close to working))
        * Support multiple pipes in one command. (10)
-       * killcommand delivers signals to background processes. The kill command has the format: kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID is an integer that specifies the job that should receive the signal. (5)
+       * *kill* command delivers signals to background processes. The kill command has the format: kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID is an integer that specifies the job that should receive the signal. (5)
 
 ## MATERIALS TO BE HANDED IN
 
-Each group should submit the project by email to the TA (ishrakhayet@ku.edu). Create a tar file
-with all of your source code and a Makefile and build instructions. The report should describe each of
-the features in your quash shell and (briefly) how you implemented each feature. Also, describe how
-you tested quash and document any required features that are not completely implemented in your
-quash shell.
+Each group should submit the project by email to the TA (ishrakhayet@ku.edu). Create a tar file with all of your source code and a Makefile and build instructions. The report should describe each of the features in your quash shell and (briefly) how you implemented each feature. Also, describe how you tested quash and document any required features that are not completely implemented in your quash shell.
 
 ## MISCELLANEOUS
 
-- You may work in groups of 2 if you choose.
-- This project isnoteasy to implement. Please start the project as early as you can.
-- We strongly recommend that you use C or C++ to implement this project. You may choose a different language, but beware that it may not be possible to implement some of the features in some languages. Also, if you choose to use another language, you may not use any libraries that abstract away the functionality of the shell (for example, libraries that call pipe, fork, and exec in a single routine).
+* You may work in groups of 2 if you choose.
+* This project isnoteasy to implement. Please start the project as early as you can.
+* We strongly recommend that you use C or C++ to implement this project. You may choose a different language, but beware that it may not be possible to implement some of the features in some languages. Also, if you choose to use another language, you may not use any libraries that abstract away the functionality of the shell (for example, libraries that call pipe, fork, and exec in a single routine).
 
