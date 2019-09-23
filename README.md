@@ -12,7 +12,7 @@ The goal of this project is to design our own unix shell in a language of our ch
 
 # Project Requirements
 
-Project No. 1: Quite a Shell (quash)
+Project No. 1: Quite a Shell (quash) (herein NAsh)
 
 **Submission due: October 18, 2019, 2:00pm**
 
@@ -24,44 +24,44 @@ Project No. 1: Quite a Shell (quash)
 
 ## DESCRIPTION
 
-In this project, you will implement Quite a Shell (quash) using the UNIX system calls. **You may
-work in groups of 2** if you choose. Quash should behave similar to csh, bash or other popular shell
-programs. Specifically, the following features should be implemented in quash.
+In this project, you will implement Quite a Shell (NAsh) using the UNIX system calls. **You may
+work in groups of 2** if you choose. NAsh should behave similar to csh, bash or other popular shell
+programs. Specifically, the following features should be implemented in NAsh.
 
-* Quash should be able to run executables (the basic function of a shell) with command line parameters. Explore the use of **fork()** and **exec()** to run executables.
-* If the executable is not specified in the absolute path format (starting with ‘/’), quash should search the directories in the environment variable PATH (see below). If no executable file is found, quash should print an error message.
-* Quash should allow both foreground and background executions. Character ‘&’ is used to indicate background execution. Commands without ‘&’ are assumed to run in foreground. Explore the use of **wait()**, **waitpid()**, and the **SIGCHLD** signal to handle foreground and background processes.
-* Quash should support the following built-in functions:
-    * *set* to set the value of a variable in the environment. Quash should inherit the initial environment from the command line that invokes it. In C, this is achieved by using the **char envp** argument to main, as in:
+* NAsh should be able to run executables (the basic function of a shell) with command line parameters. Explore the use of **fork()** and **exec()** to run executables.
+* If the executable is not specified in the absolute path format (starting with ‘/’), NAsh should search the directories in the environment variable PATH (see below). If no executable file is found, NAsh should print an error message.
+* NAsh should allow both foreground and background executions. Character ‘&’ is used to indicate background execution. Commands without ‘&’ are assumed to run in foreground. Explore the use of **wait()**, **waitpid()**, and the **SIGCHLD** signal to handle foreground and background processes.
+* NAsh should support the following built-in functions:
+    * *set* to set the value of a variable in the environment. NAsh should inherit the initial environment from the command line that invokes it. In C, this is achieved by using the **char envp** argument to main, as in:
     ```cpp
         int main (int argc, char **argv, char **envp)
     ```
-    * Quash should support (at least) two built-in variables: PATH, which is used to record the
+    * NAsh should support (at least) two built-in variables: PATH, which is used to record the
 paths to search for executables, and HOME, the user’s home directory. PATH may contain
 multiple directories (separated by :). For example, The command ‘set PATH=/usr/bin:/bin’
-in quash should set the variable PATH to contain two directories, */usr/bin* and */bin*.
+in NAsh should set the variable PATH to contain two directories, */usr/bin* and */bin*.
     * Child processes should inherit the environment variables (in C, various flavors of the exec system call allow you to pass the environment to child processes)
     * *cd **dir*** to change the current working directory to **dir**. *cd* with no arguments should change to the directory in the HOME environment variable. Explore the use of **chdir()** to change working directoty.
-    * *quit* and *exit* to exit quash.
+    * *quit* and *exit* to exit NAsh.
     * *jobs* should print all of the currently running background processes in the format:
     ```
         [JOBID] PID COMMAND
     ```
-    * where JOBID is a unique positive integer quash assigns to the job to identify it, PID is the PID of the child process used for the job, and COMMAND is the command used to invoke the job.
+    * where JOBID is a unique positive integer NAsh assigns to the job to identify it, PID is the PID of the child process used for the job, and COMMAND is the command used to invoke the job.
 
-* When a command is run in the background, quash should print:
+* When a command is run in the background, NAsh should print:
 ```
    [JOBID] PID running in background
 ```
-* When a background command finishes, quash should print:
+* When a background command finishes, NAsh should print:
 ```
    [JOBID] PID finished COMMAND
 ```
-* Quash should implement I/O redirection. The ‘<’ character is used to redirect the standard input from a file. The ‘>’ character is used to redirect the standard output to a file. For example, ‘ls> a’ sends to results of *ls* to file *a*. Explore the use of **freopen()** to achieve I/O redirection.
-* Quash should implement the pipe (|) command. e.g. ‘cat myprog.c|more’.
-* Quash should support reading commands interactively (with a prompt) or reading a set of commands stored in a file that is redirected from standard input, as in:
+* NAsh should implement I/O redirection. The ‘<’ character is used to redirect the standard input from a file. The ‘>’ character is used to redirect the standard output to a file. For example, ‘ls> a’ sends to results of *ls* to file *a*. Explore the use of **freopen()** to achieve I/O redirection.
+* NAsh should implement the pipe (|) command. e.g. ‘cat myprog.c|more’.
+* NAsh should support reading commands interactively (with a prompt) or reading a set of commands stored in a file that is redirected from standard input, as in:
 ```
-   bash> quash < commands.txt
+   bash> nash < commands.txt
 ```
 
 ## GRADING POLICY
@@ -87,11 +87,11 @@ Partial credits will be given for incomplete efforts. However, a program that ca
 
 ## MATERIALS TO BE HANDED IN
 
-Each group should submit the project by email to the TA (ishrakhayet@ku.edu). Create a tar file with all of your source code and a Makefile and build instructions. The report should describe each of the features in your quash shell and (briefly) how you implemented each feature. Also, describe how you tested quash and document any required features that are not completely implemented in your quash shell.
+Each group should submit the project by email to the TA (ishrakhayet@ku.edu). Create a tar file with all of your source code and a Makefile and build instructions. The report should describe each of the features in your NAsh shell and (briefly) how you implemented each feature. Also, describe how you tested NAsh and document any required features that are not completely implemented in your NAsh shell.
 
 ## MISCELLANEOUS
 
-* You may work in groups of 2 if you choose.
-* This project isnoteasy to implement. Please start the project as early as you can.
+* **You may work in groups of 2** if you choose.
+* This project is **not** easy to implement. Please start the project as early as you can.
 * We strongly recommend that you use C or C++ to implement this project. You may choose a different language, but beware that it may not be possible to implement some of the features in some languages. Also, if you choose to use another language, you may not use any libraries that abstract away the functionality of the shell (for example, libraries that call pipe, fork, and exec in a single routine).
 
