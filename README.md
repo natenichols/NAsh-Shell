@@ -78,19 +78,10 @@ Partial credits will be given for incomplete efforts. However, a program that ca
 
 1. Run executables without arguments (10)
 2. Run executables with arguments (10)
-
-```
-3.setfor HOME and PATH work properly (5)
-```
-```
-4.exitandquitwork properly (5)
-```
-```
-5.cd(with and without arguments) works properly (5)
-```
-```
-6.PATHworks properly. Give error messages when the executable is not found (10)
-```
+3. setfor HOME and PATH work properly (5)
+4. exitandquitwork properly (5)
+5. cd(with and without arguments) works properly (5)
+6. PATHworks properly. Give error messages when the executable is not found (10)
 7. Child processes inherit the environment (5)
 8. Allow background/foreground execution (&) (5)
 9. Printing/reporting of background processes, (including thejobscommand) (10)
@@ -100,12 +91,8 @@ Partial credits will be given for incomplete efforts. However, a program that ca
 13. Report (10)
 14. Bonus points (you can get bonus points only if you have everything else working (or very close to
 working))
-- Support multiple pipes in one command. (10)
-
-
-- killcommand delivers signals to background processes. The kill command has the format:
-    kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID
-    is an integer that specifies the job that should receive the signal. (5)
+   * Support multiple pipes in one command. (10)
+   * killcommand delivers signals to background processes. The kill command has the format: kill SIGNUM JOBID, where SIGNUM is an integer specifying the signal number, and JOBID is an integer that specifies the job that should receive the signal. (5)
 
 ## MATERIALS TO BE HANDED IN
 
@@ -117,11 +104,7 @@ quash shell.
 
 ## MISCELLANEOUS
 
-- You may work in groups of 2if you choose.
+- You may work in groups of 2 if you choose.
 - This project isnoteasy to implement. Please start the project as early as you can.
-- We strongly recommend that you use C or C++ to implement this project. You may choose a
-    different language, but beware that it may not be possible to implement some of the features in
-    some languages. Also, if you choose to use another language, you may not use any libraries that
-    abstract away the functionality of the shell (for example, libraries that call pipe, fork, and exec
-    in a single routine).
+- We strongly recommend that you use C or C++ to implement this project. You may choose a different language, but beware that it may not be possible to implement some of the features in some languages. Also, if you choose to use another language, you may not use any libraries that abstract away the functionality of the shell (for example, libraries that call pipe, fork, and exec in a single routine).
 
