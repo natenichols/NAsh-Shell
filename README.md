@@ -49,19 +49,18 @@ in quash should set the variable PATH to contain two directories, */usr/bin* and
     ```
     * where JOBID is a unique positive integer quash assigns to the job to identify it, PID is the PID of the child process used for the job, and COMMAND is the command used to invoke the job.
 
-
 * When a command is run in the background, quash should print:
-```bash
+```
    [JOBID] PID running in background
 ```
 * When a background command finishes, quash should print:
-```bash
+```
    [JOBID] PID finished COMMAND
 ```
 * Quash should implement I/O redirection. The ‘<’ character is used to redirect the standard input from a file. The ‘>’ character is used to redirect the standard output to a file. For example, ‘ls> a’ sends to results of *ls* to file *a*. Explore the use of **freopen()** to achieve I/O redirection.
 * Quash should implement the pipe (|) command. e.g. ‘cat myprog.c|more’.
 * Quash should support reading commands interactively (with a prompt) or reading a set of commands stored in a file that is redirected from standard input, as in:
-```bash
+```
    bash> quash < commands.txt
 ```
 
@@ -78,7 +77,7 @@ Partial credits will be given for incomplete efforts. However, a program that ca
    7. Child processes inherit the environment (5)
    8. Allow background/foreground execution (&) (5)
    9. Printing/reporting of background processes, (including thejobscommand) (10)
-   10. Allow file redirection (>and<) (5)
+   10. Allow file redirection (> and <) (5)
    11. Allow (1) pipe (|) (10)
    12. Supports reading commands from prompt and from file (10)
    13. Report (10)
