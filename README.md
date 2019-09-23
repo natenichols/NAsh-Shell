@@ -12,7 +12,7 @@ The goal of this project is to design our own unix shell in a language of our ch
 
 # Project Requirements
 
-Project No. 1: Quite a Shell (NAsh)
+Project No. 1: Nathan-Andre Shell (NAsh)
 
 Submission due: October 18, 2019, 2:00pm
 
