@@ -94,19 +94,10 @@ Partial credits will be given for incomplete efforts. However, a program that ca
 
 1. Run executables without arguments (10)
 2. Run executables with arguments (10)
-
-```
-3.setfor HOME and PATH work properly (5)
-```
-```
-4.exitandquitwork properly (5)
-```
-```
-5.cd(with and without arguments) works properly (5)
-```
-```
-6.PATHworks properly. Give error messages when the executable is not found (10)
-```
+3. setfor HOME and PATH work properly (5)
+4. exitandquitwork properly (5)
+5. cd(with and without arguments) works properly (5)
+6. PATHworks properly. Give error messages when the executable is not found (10)
 7. Child processes inherit the environment (5)
 8. Allow background/foreground execution (&) (5)
 9. Printing/reporting of background processes, (including thejobscommand) (10)
