@@ -2,9 +2,17 @@
 #include "NAsh.h"
 #include <string.h>
 #include <unordered_map>
+#include <signal.h>
 
 enum command {QUIT, EXIT, INVALID_COMMAND};
 const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}};
+
+/* Signal Handler for SIGINT */
+void sigintHandler(int sig_num) 
+{ 
+    signal(SIGINT, sigintHandler);
+    std::cin.putback('\n');
+} 
 
 command strToCMD(std::string s) {
     if(strCMD.find(s) == strCMD.end()) return INVALID_COMMAND;
@@ -31,15 +39,20 @@ int main (int argc, char **argv, char **envp) {
     std::cout << "\t\t||----w |" << std::endl;
     std::cout << "\t\t||     ||" << std::endl;
 
-
+    signal(SIGINT, sigintHandler);
     bool done = false; 
     while (!done) {
         // Display bash prompt
         std::cout << "NAsh> ";
 
         std::string strCMD;
-        std::getline(std::cin, strCMD, '\n');
-        char* token = std::strtok(&strCMD[0], " ");
+        try {
+            std::getline(std::cin, strCMD, '\n');
+        }
+        catch(...) {
+
+        }
+        char* token = strtok(&strCMD[0], " ");
         if(token != NULL)
         switch (strToCMD(token)) {
             // insert all other enums
