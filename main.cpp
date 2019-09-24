@@ -22,9 +22,9 @@ int main (int argc, char **argv, char **envp) {
         return 0;
     }
 
-    std::cout <<  "______________________" << std::endl;
-    std::cout << "< Welcome to NAsh u ho >" << std::endl;
-    std::cout << " ----------------------" << std::endl;
+    std::cout <<  " _________________" << std::endl;
+    std::cout << "< Welcome to NAsh >" << std::endl;
+    std::cout << " -----------------" << std::endl;
     std::cout << "\t\\   ^__^" << std::endl;
     std::cout << "\t \\  (oo)\\_______" << std::endl;
     std::cout << "\t    (__)\\       )\\/" << std::endl;
@@ -39,7 +39,7 @@ int main (int argc, char **argv, char **envp) {
 
         std::string strCMD;
         std::getline(std::cin, strCMD, '\n');
-        char* token = std::strtok(&strCMD[0], " ");
+        char* token = strtok(&strCMD[0], " ");
         if(token != NULL)
         switch (strToCMD(token)) {
             // insert all other enums
