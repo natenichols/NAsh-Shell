@@ -8,7 +8,6 @@ int main (int argc, char **argv, char **envp) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
         return 0;
     }
-    else {
     while (true) {
         // Display bash prompt
         std::cout << "NAsh> ";
