@@ -4,3 +4,6 @@
 # Executables
 *.out
 nash
+
+# VS Code
+.vscode

@@ -1,15 +1,18 @@
-#include<iostream>
+#include <iostream>
 #include "NAsh.h"
+#include <string>
 
 int main (int argc, char **argv, char **envp) {
-    if(argc > 1 && (argv[1] == std::string("-v") || argv[1] == std::string("--version"))) {
+
+    if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10))) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
-    }
-    else if() {
-        
+        return 0;
     }
     else {
-        //run
+    while (true) {
+        // Display bash prompt
+        std::cout << "NAsh> ";
+        exit;
     }
     
     return 0;
