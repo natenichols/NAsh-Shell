@@ -3,23 +3,25 @@
 #include <string.h>
 #include <unordered_map>
 #include <signal.h>
+#include <setjmp.h>
+#include <unistd.h>
+enum command {QUIT, EXIT, SET, INVALID_COMMAND};
+const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}, {"set", SET} };
 
-enum command {QUIT, EXIT, INVALID_COMMAND};
-const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}};
-
-/* Signal Handler for SIGINT */
-void sigintHandler(int sig_num) 
-{ 
-    signal(SIGINT, sigintHandler);
-    std::cin.putback('\n');
+jmp_buf jump_buffer;
+void sigintHandler(int) 
+{   
+    longjmp(jump_buffer,0);
 } 
 
 command strToCMD(std::string s) {
     if(strCMD.find(s) == strCMD.end()) return INVALID_COMMAND;
+    if(std::cin.eof()) return QUIT;
     return strCMD.at(s);
 }
 
 int main (int argc, char **argv, char **envp) {
+    signal(SIGINT, sigintHandler);
 
     if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
@@ -39,19 +41,25 @@ int main (int argc, char **argv, char **envp) {
     std::cout << "\t\t||----w |" << std::endl;
     std::cout << "\t\t||     ||" << std::endl;
 
-    signal(SIGINT, sigintHandler);
-    bool done = false; 
-    while (!done) {
-        // Display bash prompt
-        std::cout << "NAsh> ";
 
-        std::string strCMD;
-        std::getline(std::cin, strCMD, '\n');
+    setjmp(jump_buffer);
+    bool done = false; 
+    std::string strCMD;
+
+    std::cout << std::endl;
+    while (!done && std::cout << "NAsh> " && std::getline(std::cin, strCMD, '\n')) {
         char* token = strtok(&strCMD[0], " ");
         if(token != NULL)
         switch (strToCMD(token)) {
             // insert all other enums
-            
+            case SET: {
+                char* envVar = strtok(NULL, "=");
+                char* envVal = strtok(NULL, " ");
+                if(envVar != NULL && envVal != NULL) {
+                std::cout << "var: " << envVar << std::endl;
+                std::cout << "val: " << envVal << std::endl;}
+            }
+            break;
             case QUIT:
             case EXIT:
                 done = true;
@@ -60,6 +68,8 @@ int main (int argc, char **argv, char **envp) {
                 std::cout << "INVALID COMMAND" << std::endl;
         } 
     }
-    
+
+    std::cout << "\nExiting..." << std::endl;
+
     return 0;
 }
