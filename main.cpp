@@ -43,14 +43,13 @@ int main (int argc, char **argv, char **envp) {
         if(token != NULL)
         switch (strToCMD(token)) {
             // insert all other enums
-
-
-            default:
-                std::cout << "INVALID COMMAND" << std::endl;
+            
             case QUIT:
             case EXIT:
                 done = true;
             break;
+            default:
+                std::cout << "INVALID COMMAND" << std::endl;
         } 
     }
     
