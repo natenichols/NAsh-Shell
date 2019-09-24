@@ -28,7 +28,9 @@ int main (int argc, char **argv, char **envp) {
         return 0;
     }
     else if (argc > 1 && strncmp(argv[1], "--help", 7) == 0) {
-        std::cout << "insert help menu here" << std::endl;
+        std::cout << "Usage: nash <arguments> <options>" << std::endl << std::endl;
+        std::cout << "Options:\n\t --help\t\t display help message, exits\n\t --version -v\t show version number, exits\n";
+        std::cout << std::endl;
         return 0;
     }
 
