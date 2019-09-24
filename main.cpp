@@ -20,7 +20,9 @@ command strToCMD(std::string s) {
 
 int main (int argc, char **argv, char **envp) {
     signal(SIGINT, sigintHandler);
-
+    if (envp != NULL) {
+        std::cout << "Environment Variable: " << *envp << std::endl;
+    }
     if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
         return 0;
