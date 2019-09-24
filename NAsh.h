@@ -10,11 +10,8 @@ class NAsh {
         std::map<std::string, std::string> environmentVars;
 
         void populateEnv(char **envp) {
-            for(int x = 0; envp[x] != nullptr; x++) {
-                for(int y = 0; envp[x][y] != '\0'; y++) {
-                    std::cout << envp[x][y];
-                }
-                std::cout << std::endl;
+             for(char** i = envp; *i != 0; i++) {
+                std::cout << "Environment Variable: " << *i << std::endl;
             }
         }
 
