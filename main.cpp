@@ -12,7 +12,16 @@ int main (int argc, char **argv, char **envp) {
         std::cout << "insert help menu here" << std::endl;
         return 0;
     }
-    
+
+    std::cout <<  "______________________" << std::endl;
+    std::cout << "< Welcome to NAsh u ho >" << std::endl;
+    std::cout << " ----------------------" << std::endl;
+    std::cout << "\t\\   ^__^" << std::endl;
+    std::cout << "\t \\  (oo)\\_______" << std::endl;
+    std::cout << "\t    (__)\\       )\\/" << std::endl;
+    std::cout << "\t\t||----w |" << std::endl;
+    std::cout << "\t\t||     ||" << std::endl;
+
     std::string cmd;
     while (true) {
         // Display bash prompt
