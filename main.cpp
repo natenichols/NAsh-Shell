@@ -13,9 +13,11 @@ int main (int argc, char **argv, char **envp) {
         return 0;
     }
     
+    std::string cmd;
     while (true) {
         // Display bash prompt
         std::cout << "NAsh> ";
+        std::getline(std::cin, cmd, '\n');
         break;
     }
     
