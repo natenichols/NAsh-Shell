@@ -1,6 +1,15 @@
 #include <iostream>
 #include "NAsh.h"
 #include <string.h>
+#include <unordered_map>
+
+enum command {QUIT, EXIT, INVALID_COMMAND};
+const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}};
+
+command strToCMD(std::string s) {
+    if(strCMD.find(s) == strCMD.end()) return INVALID_COMMAND;
+    return strCMD.at(s);
+}
 
 int main (int argc, char **argv, char **envp) {
 
@@ -22,12 +31,27 @@ int main (int argc, char **argv, char **envp) {
     std::cout << "\t\t||----w |" << std::endl;
     std::cout << "\t\t||     ||" << std::endl;
 
-    std::string cmd;
-    while (true) {
+
+    bool done = false; 
+    while (!done) {
         // Display bash prompt
         std::cout << "NAsh> ";
-        std::getline(std::cin, cmd, '\n');
-        break;
+
+        std::string strCMD;
+        std::getline(std::cin, strCMD, '\n');
+        char* token = std::strtok(&strCMD[0], " ");
+        if(token != NULL)
+        switch (strToCMD(token)) {
+            // insert all other enums
+
+
+            default:
+                std::cout << "INVALID COMMAND" << std::endl;
+            case QUIT:
+            case EXIT:
+                done = true;
+            break;
+        } 
     }
     
     return 0;
