@@ -3,15 +3,13 @@
 #include <string.h>
 #include <unordered_map>
 #include <signal.h>
-#include <setjmp.h>
-#include <unistd.h>
+
 enum command {QUIT, EXIT, SET, INVALID_COMMAND};
 const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}, {"set", SET} };
 
-jmp_buf jump_buffer;
 void sigintHandler(int) 
 {   
-    longjmp(jump_buffer,0);
+    std::cout << "\nNAsh> " << std::flush;
 } 
 
 command strToCMD(std::string s) {
@@ -41,12 +39,8 @@ int main (int argc, char **argv, char **envp) {
     std::cout << "\t\t||----w |" << std::endl;
     std::cout << "\t\t||     ||" << std::endl;
 
-
-    setjmp(jump_buffer);
     bool done = false; 
     std::string strCMD;
-
-    std::cout << std::endl;
     while (!done && std::cout << "NAsh> " && std::getline(std::cin, strCMD, '\n')) {
         char* token = strtok(&strCMD[0], " ");
         if(token != NULL)
@@ -56,8 +50,11 @@ int main (int argc, char **argv, char **envp) {
                 char* envVar = strtok(NULL, "=");
                 char* envVal = strtok(NULL, " ");
                 if(envVar != NULL && envVal != NULL) {
-                std::cout << "var: " << envVar << std::endl;
-                std::cout << "val: " << envVal << std::endl;}
+                    std::cout << "var: " << envVar << std::endl;
+                    std::cout << "val: " << envVal << std::endl;
+                } else {
+                    std::cout << "Invalid \"set\" syntax. Correct syntax is \"set VAR=VALUE\"" << std::endl;
+                }
             }
             break;
             case QUIT:
