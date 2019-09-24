@@ -17,6 +17,16 @@ class NAsh {
                 std::cout << std::endl;
             }
         }
+
+        void appendEnv(char* envVar, char* envVal) {
+            environmentVars[envVar] = envVal;
+        }
+
+        void lsEnv() {
+            for(auto x : environmentVars) {
+                std::cout << x.first << "=" << x.second << std::endl;
+            }
+        }
     
     public:
         NAsh(int argc, char **argv, char **envp);
