@@ -8,11 +8,14 @@
 class NAsh {
     private:
         std::map<std::string, std::string> environmentVars;
+    
+    public:
+        NAsh() {
+            
+        }
 
-        void populateEnv(char **envp) {
-             for(char** i = envp; *i != 0; i++) {
-                std::cout << "Environment Variable: " << *i << std::endl;
-            }
+        void execute(char* cmd) {
+            
         }
 
         void appendEnv(char* envVar, char* envVal) {
@@ -24,8 +27,6 @@ class NAsh {
                 std::cout << x.first << "=" << x.second << std::endl;
             }
         }
-    
-    public:
-        NAsh(int argc, char **argv, char **envp);
+       // NAsh(int argc, char **argv, char **envp);
 };
 #endif //NASH_H

@@ -19,9 +19,14 @@ command strToCMD(std::string s) {
 }
 
 int main (int argc, char **argv, char **envp) {
+    NAsh shell;
     signal(SIGINT, sigintHandler);
+
+    //Populates Environment variables
     for(char** i = envp; *i != 0; i++) {
-        std::cout << "Environment Variable: " << *i << std::endl;
+        char* envVar = strtok(*i, "=");
+        char* envVal = strtok(NULL, " ");
+        shell.appendEnv(envVar, envVal);
     }
     if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
@@ -48,6 +53,8 @@ int main (int argc, char **argv, char **envp) {
     while (!done && std::cout << "NAsh> " && std::getline(std::cin, strCMD, '\n')) {
         char* token = strtok(&strCMD[0], " ");
         if(token != NULL)
+
+        //TODO: replace switch command with map<char*, std::function<int(...)>>
         switch (strToCMD(token)) {
             // insert all other enums
             case SET: {
