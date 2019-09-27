@@ -73,7 +73,12 @@ int main (int argc, char **argv, char **envp) {
                 done = true;
             break;
             default:
-                std::cout << "INVALID COMMAND" << std::endl;
+                try {
+                    shell.execute(token, "");
+                }
+                catch(...) {
+                    std::cout << "INVALID COMMAND" << std::endl;
+                }
         } 
     }
 
