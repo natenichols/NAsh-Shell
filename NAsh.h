@@ -10,15 +10,17 @@
 class NAsh {
     private:
         std::map<std::string, char*> environmentVars;
+        char** envs;
+
         int BSIZE = 256;
     
     public:
-        NAsh() {
-            
+        NAsh(char** env) {
+            envs = env;
         }
 
         void execute(char* cmd, char* args) {
-            pid_t pid, new_pid;
+            pid_t pid;
             int pipefd[2];
             int status;
 
@@ -42,17 +44,16 @@ class NAsh {
             pid = fork();
 
             if(pid == 0) {
-
                 while(path != NULL) {
                     strcpy(pathWithCmd, path);
                     strcat(pathWithCmd, "/");
                     strcat(pathWithCmd, cmd);
-                    char* args[] = {pathWithCmd, *args, (char*)0};
+                    char* args[] = {pathWithCmd, *args, 0};
 
                     dup2 (pipefd[1], STDOUT_FILENO);
-                    close(pipefd[0]);
                     close(pipefd[1]);
-                    int res = execvp(args[0], args);
+                    close(pipefd[0]);
+                    int res = execvpe(args[0], args, envs);
 
                     if(res > 0) return;
 
@@ -61,7 +62,8 @@ class NAsh {
             }
             else if(pid > 0) {
                 close(pipefd[1]);
-                while(read(pipefd[0], buffer, BSIZE) != 0);
+                wait(&status);
+                while(read(pipefd[0], buffer, BSIZE) != NULL);
                     std::cout << buffer;
                 wait(NULL);
             }

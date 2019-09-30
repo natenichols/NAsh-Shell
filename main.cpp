@@ -19,7 +19,7 @@ command strToCMD(std::string s) {
 }
 
 int main (int argc, char **argv, char **envp) {
-    NAsh shell;
+    NAsh shell(envp);
     signal(SIGINT, sigintHandler);
 
     //Populates Environment variables
