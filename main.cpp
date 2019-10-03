@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <signal.h>
 
-enum command {QUIT, EXIT, SET, INVALID_COMMAND};
-const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}, {"set", SET} };
+enum command {QUIT, EXIT, SET, LS, INVALID_COMMAND};
+const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}, {"set", SET}, {"ls", LS}};
 
 void sigintHandler(int) 
 {   
@@ -19,6 +19,7 @@ command strToCMD(std::string s) {
 }
 
 int main (int argc, char **argv, char **envp) {
+
     NAsh shell;
     signal(SIGINT, sigintHandler);
 
@@ -68,17 +69,23 @@ int main (int argc, char **argv, char **envp) {
                 }
             }
             break;
+            case LS: {
+                char* args = (char*)0;
+                shell.execute(token, args);
+            }
+            break;
             case QUIT:
             case EXIT:
                 done = true;
             break;
             default:
-                try {
-                    shell.execute(token, "");
-                }
-                catch(...) {
-                    std::cout << "INVALID COMMAND" << std::endl;
-                }
+                // try {
+                //     
+                // }
+                // catch(...) {
+            std::cout << "INVALID COMMAND" << std::endl;
+                // }
+            
         } 
     }
 
