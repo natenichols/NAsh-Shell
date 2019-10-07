@@ -1,44 +1,28 @@
 #include <iostream>
 #include "NAsh.h"
 #include <string.h>
-#include <unordered_map>
 #include <signal.h>
+#include <vector>
 
-enum command {QUIT, EXIT, SET, LS, INVALID_COMMAND};
-const std::unordered_map<std::string, command> strCMD{ {"quit", QUIT}, {"exit", EXIT}, {"set", SET}, {"ls", LS}};
+#include<sstream>
+std::vector<std::string> split(std::string str, char delim) {
+  std::vector<std::string> tokens;
+  std::stringstream ss(str); // Turn the string into a stream.
+  std::string token;
+ 
+  while(getline(ss, token, delim)) {
+    tokens.push_back(token);
+  }
+
+  return tokens;
+}
 
 void sigintHandler(int) 
 {   
     std::cout << "\nNAsh> " << std::flush;
 } 
 
-command strToCMD(std::string s) {
-    if(strCMD.find(s) == strCMD.end()) return INVALID_COMMAND;
-    if(std::cin.eof()) return QUIT;
-    return strCMD.at(s);
-}
-
-int main (int argc, char **argv, char **envp) {
-    NAsh shell(envp);
-    signal(SIGINT, sigintHandler);
-
-    //Populates Environment variables
-    for(char** i = envp; *i != 0; i++) {
-        char* envVar = strtok(*i, "=");
-        char* envVal = strtok(NULL, " ");
-        shell.appendEnv(envVar, envVal);
-    }
-    if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
-        std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
-        return 0;
-    }
-    else if (argc > 1 && strncmp(argv[1], "--help", 7) == 0) {
-        std::cout << "Usage: nash <arguments> <options>" << std::endl << std::endl;
-        std::cout << "Options:\n\t --help\t\t display help message, exits\n\t --version -v\t show version number, exits\n";
-        std::cout << std::endl;
-        return 0;
-    }
-
+void welcome() {
     std::cout <<  " _________________" << std::endl;
     std::cout << "< Welcome to NAsh >" << std::endl;
     std::cout << " -----------------" << std::endl;
@@ -47,47 +31,42 @@ int main (int argc, char **argv, char **envp) {
     std::cout << "\t    (__)\\       )\\/" << std::endl;
     std::cout << "\t\t||----w |" << std::endl;
     std::cout << "\t\t||     ||" << std::endl;
+}
 
-    bool done = false; 
-    std::string strCMD;
-    while (!done && std::cout << "NAsh> " && std::getline(std::cin, strCMD, '\n')) {
-        char* token = strtok(&strCMD[0], " ");
-        if(token != NULL)
-
-        //TODO: replace switch command with map<char*, std::function<int(...)>>
-        switch (strToCMD(token)) {
-            // insert all other enums
-            case SET: {
-                char* envVar = strtok(NULL, "=");
-                char* envVal = strtok(NULL, " ");
-                if(envVar != NULL && envVal != NULL) {
-                    std::cout << "var: " << envVar << std::endl;
-                    std::cout << "val: " << envVal << std::endl;
-                } else {
-                    std::cout << "Invalid \"set\" syntax. Correct syntax is \"set VAR=VALUE\"" << std::endl;
-                }
-            }
-            break;
-            case LS: {
-                char* args = (char*)0;
-                shell.execute(token, args);
-            }
-            break;
-            case QUIT:
-            case EXIT:
-                done = true;
-            break;
-            default:
-                // try {
-                //     
-                // }
-                // catch(...) {
-            std::cout << "INVALID COMMAND" << std::endl;
-                // }
-            
-        } 
+int main (int argc, char **argv, char **envp) {
+    if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
+        std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
+        return 0;
+    }
+    if (argc > 1 && (strncmp(argv[1], "-h", 3) == 0 ||  strncmp(argv[1], "--help", 7) == 0)) {
+        std::cout << "Usage: nash <arguments> <options>" << std::endl << std::endl;
+        std::cout << "Options:\n\t --help -h\t\t display help message, exits\n\t --version -v\t show version number, exits\n";
+        std::cout << std::endl;
+        return 0;
     }
 
+    welcome();
+    signal(SIGINT, sigintHandler);
+    NAsh shell(envp);
+
+    while (shell.isActive()) {
+        std::cout << "NAsh> ";
+
+        std::string strCMD;
+        std::getline(std::cin, strCMD, '\n');
+        if(strCMD.length() > 0) {
+            //parse whole command line into  tokens
+            std::vector<std::string> tokens = split(strCMD, ' ');
+            int pipe = -1;
+            for(auto c : tokens)  {
+                if(c != "|") {
+                    pipe = shell.execInChild(c, pipe);
+                }
+                
+            }
+            shell.printFromPipe(pipe);
+        } 
+    }
     std::cout << "\nExiting..." << std::endl;
 
     return 0;
