@@ -71,15 +71,15 @@ int main (int argc, char **argv, char **envp) {
 
         std::string strCMD;
         std::getline(std::cin, strCMD, '\n');
-        if(strCMD.length() > 0) {
-            //parse whole command line into  tokens
-            std::vector<std::string> tokens = split(strCMD, '|');
-            int pipe = -1;
-            for(auto c : tokens)  {
-                    pipe = shell.execInChild(split(trim(c), ' '), pipe);
-            }
-            shell.printFromPipe(pipe);
-        } 
+        if(strCMD.length() == 0) continue;
+     
+        //parse whole command line into  tokens
+        std::vector<std::string> tokens = split(strCMD, '|');
+        int pipe = -1;
+        for(auto c : tokens)  {
+                pipe = shell.execInChild(split(trim(c), ' '), pipe);
+        }
+        shell.printFromPipe(pipe);
     }
     std::cout << "\nExiting..." << std::endl;
 

@@ -4,6 +4,7 @@
 #include<string.h>
 #include<sys/wait.h>
 #include<unordered_map>
+#include<map>
 
 #ifndef NASH_H
 #define NASH_H
@@ -11,11 +12,13 @@
 class NAsh {
     private:
         std::unordered_map<std::string, char*> environmentVars;
+        std::map<int, std::pair<int, std::string>> jobs; 
         int BSIZE = 256;
         bool active;
+        int processCounter;
 
     public:
-        NAsh() {active = true;};
+        NAsh() {active = true; processCounter = 0;};
         NAsh(char** envp) {
             //Populates Environment variables
             for(char** i = envp; *i != 0; i++) {
@@ -24,6 +27,7 @@ class NAsh {
                 appendEnv(envVar, envVal);
             }
             active = true;
+            processCounter = 0;
         }
         bool isActive() {return active;}
         void printFromPipe(int pipe);
@@ -37,5 +41,6 @@ class NAsh {
                 std::cout << x.first << "=" << x.second << std::endl; 
             }
         }
+        void printJobs();
 };
 #endif

@@ -4,13 +4,25 @@
 //             printFromPipe(execInChild("grep main", execInChild("ls")));
 //             std::cout<<std::endl;
 // }
-
+std::string getPath(std::string s) {
+    return s;
+}
+void NAsh::printJobs() {
+   for (auto it : jobs) {
+        std::cout << "[" << it.first << "] " << it.second.first << " " << it.second.second << std::endl;
+    }
+}
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
+            if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
             if(cmd[0] == "exit" || cmd[0] == "quit") {
                     this->active = false;
                     return -1;
             }
-            pid_t pid;
+            
+            if(cmd[0][0] != '/') {
+                cmd[0] = getPath(cmd[0]);
+            }
+
             int pipefd[2], status;
 
             if(pipe(pipefd) == -1) {
@@ -18,7 +30,21 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 exit(1);
             }
 
-            if((pid = fork()) == 0) {
+            pid_t pid = fork();
+
+            bool background = false;
+            if (cmd[cmd.size()-1] == "&") {
+                background = true;
+                cmd.pop_back();
+
+                std::string strCMD = "";
+                for(int i = 0; i < cmd.size(); i++) {
+                    strCMD += cmd[i] + ((i != cmd.size() - 1) ? " " : "");
+                }
+                jobs.insert({++processCounter, {pid, strCMD}});
+            }
+
+            if(pid == 0) {
                 // Child
                 if(readPipe != -1) {
                     dup2(readPipe, STDIN_FILENO);
@@ -35,19 +61,21 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 for(size_t x = 0; x < cmd.size(); x++) 
                     args[x] = (char*)cmd[x].c_str();
                     
-                
-                execv(args[0], args);
-                
-                // char* args[3] = {"grep", "main", NULL};
-                // execv("/usr/bin/grep", args);
+                if(cmd[0] == "jobs") {
+                    printJobs();
+                    exit(0);
+                }
+                execvp(args[0], args);
                 exit(0);
             }
             close(pipefd[1]);
             if(readPipe != -1) close(readPipe);
 
-            if ((waitpid(pid, &status, 0)) == -1) {
+            if (!background && (waitpid(pid, &status, 0)) == -1) {
                 fprintf(stderr, "Process encountered an error. ERROR%d", errno);
                 exit(1);
+            } else if(background) {
+                std::cout << "[" << processCounter << "] " << pid << " running in background" << std::endl;
             }
             return pipefd[0];
 }
