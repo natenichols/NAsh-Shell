@@ -36,7 +36,9 @@ std::string& trim(std::string& str) {
 
 void sigintHandler(int) 
 {   
-    std::cout << "\nNAsh> " << std::flush;
+    char buf[FILENAME_MAX];
+    getcwd(buf, FILENAME_MAX );
+    std::cout << "\nNAsh@" << buf << "> " << std::flush;
 } 
 
 void welcome() {
@@ -67,7 +69,9 @@ int main (int argc, char **argv, char **envp) {
     NAsh shell(envp);
 
     while (shell.isActive()) {
-        std::cout << "NAsh> ";
+        char buf[FILENAME_MAX];
+        getcwd(buf, FILENAME_MAX );
+        std::cout << "\nNAsh@" << buf << "> ";
 
         std::string strCMD;
         std::getline(std::cin, strCMD, '\n');
