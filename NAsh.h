@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include<unistd.h>
 #include<string.h>
 #include<sys/wait.h>
@@ -11,10 +12,10 @@ class NAsh {
     private:
         std::unordered_map<std::string, char*> environmentVars;
         int BSIZE = 256;
-        bool active = true;
+        bool active;
 
     public:
-        NAsh() {};
+        NAsh() {active = true;};
         NAsh(char** envp) {
             //Populates Environment variables
             for(char** i = envp; *i != 0; i++) {
@@ -22,11 +23,12 @@ class NAsh {
                 char* envVal = strtok(NULL, " ");
                 appendEnv(envVar, envVal);
             }
+            active = true;
         }
         bool isActive() {return active;}
         void printFromPipe(int pipe);
         void execute(char* cmd, char* args);
-        int execInChild(std::string cmd, int readPipe = -1);
+        int execInChild(std::vector<std::string> cmd, int readPipe = -1);
         void appendEnv(char* envVar, char* envVal) {
             environmentVars[envVar] = envVal;
         }

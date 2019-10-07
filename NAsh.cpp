@@ -1,11 +1,15 @@
 #include"NAsh.h"
 
- void NAsh::execute(char* cmd, char* args) {     
-            printFromPipe(execInChild("grep main", execInChild("ls")));
-            std::cout<<std::endl;
-}
+//  void NAsh::execute(char* cmd, char* args) {     
+//             printFromPipe(execInChild("grep main", execInChild("ls")));
+//             std::cout<<std::endl;
+// }
 
-int NAsh::execInChild(std::string cmd, int readPipe) {
+int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
+            if(cmd[0] == "exit" || cmd[0] == "quit") {
+                    this->active = false;
+                    return -1;
+            }
             pid_t pid;
             int pipefd[2], status;
 
@@ -24,14 +28,18 @@ int NAsh::execInChild(std::string cmd, int readPipe) {
 
                 close(pipefd[0]);
                 close(pipefd[1]);
+
+               
+
+                char** args = new char*[cmd.size()+1];
+                for(size_t x = 0; x < cmd.size(); x++) 
+                    args[x] = (char*)cmd[x].c_str();
+                    
                 
-                if(cmd == "ls") {
-                    char* args[2] = {"ls", NULL};
-                    execv("/bin/ls", args);
-                }
+                execv(args[0], args);
                 
-                char* args[3] = {"grep", "main", NULL};
-                execv("/usr/bin/grep", args);
+                // char* args[3] = {"grep", "main", NULL};
+                // execv("/usr/bin/grep", args);
                 exit(0);
             }
             close(pipefd[1]);
@@ -45,6 +53,7 @@ int NAsh::execInChild(std::string cmd, int readPipe) {
 }
 
 void NAsh::printFromPipe(int pipe) {
+    if(pipe == -1) return;
     int pid, status;
     if((pid = fork()) == 0) {
         // Child

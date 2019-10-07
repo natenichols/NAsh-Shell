@@ -17,6 +17,23 @@ std::vector<std::string> split(std::string str, char delim) {
   return tokens;
 }
 
+std::string& rtrim(std::string& str) {
+    while(str[str.length()-1] == ' ') 
+        str.erase(str.end()-1);
+    return str;
+}
+
+std::string& ltrim(std::string& str) {
+    while(str[0] == ' ') 
+        str.erase(str.begin());
+    return str;
+}
+
+
+std::string& trim(std::string& str) {
+    return rtrim(ltrim(str));
+}
+
 void sigintHandler(int) 
 {   
     std::cout << "\nNAsh> " << std::flush;
@@ -56,13 +73,10 @@ int main (int argc, char **argv, char **envp) {
         std::getline(std::cin, strCMD, '\n');
         if(strCMD.length() > 0) {
             //parse whole command line into  tokens
-            std::vector<std::string> tokens = split(strCMD, ' ');
+            std::vector<std::string> tokens = split(strCMD, '|');
             int pipe = -1;
             for(auto c : tokens)  {
-                if(c != "|") {
-                    pipe = shell.execInChild(c, pipe);
-                }
-                
+                    pipe = shell.execInChild(split(trim(c), ' '), pipe);
             }
             shell.printFromPipe(pipe);
         } 
