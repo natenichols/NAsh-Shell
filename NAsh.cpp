@@ -1,9 +1,7 @@
 #include"NAsh.h"
 
-//  void NAsh::execute(char* cmd, char* args) {     
-//             printFromPipe(execInChild("grep main", execInChild("ls")));
-//             std::cout<<std::endl;
-// }
+std::map<int, std::pair<int, std::string>>*  g_jobs;
+
 std::string getPath(std::string s) {
     return s;
 }
@@ -12,16 +10,23 @@ void NAsh::printJobs() {
         std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << std::endl;
     }
 }
-
 void sigchild_handler(int sig)
 {
-  pid_t pid = wait(NULL);
-   std::cout << "[" <<  /*jobs[pid].first <<*/ "] " << pid  << " " << /*jobs[pid].second << */std::endl;
+    // int saved_errno = errno;
+    // while (waitpid((pid_t)(-1), 0, WNOHANG) > 0) {}
+    // errno = saved_errno;
+
+    // if(g_jobs->find(pid) != g_jobs->end())
+    //     std::cout << "[" <<  (*g_jobs)[pid].first << "] " << pid  << " " << (*g_jobs)[pid].second << std::endl;
+    // exit(1);
    
 }
 
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
-            signal(SIGCHLD, sigchild_handler);
+
+            g_jobs = &jobs;
+            signal(SIGCHLD,sigchild_handler);
+
             if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
             if(cmd[0] == "exit" || cmd[0] == "quit") {
                     this->active = false;
@@ -72,10 +77,10 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     
                 if(cmd[0] == "jobs") {
                     printJobs();
-                    exit(1);
+                    exit(0);
                 }
                 execvp(args[0], args);
-                exit(1);
+                exit(0);
             }
             close(pipefd[1]);
             if(readPipe != -1) close(readPipe);

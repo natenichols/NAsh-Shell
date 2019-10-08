@@ -9,6 +9,7 @@
 #ifndef NASH_H
 #define NASH_H
 
+
 class NAsh {
     private:
         std::unordered_map<std::string, char*> environmentVars;
