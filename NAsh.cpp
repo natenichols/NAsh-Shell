@@ -27,6 +27,13 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             g_jobs = &jobs;
             signal(SIGCHLD,sigchild_handler);
 
+            if(cmd[0] == std::string("cd")) {
+                if(cmd.size() == 1) 
+                    chdir(environmentVars["HOME"]);
+                else
+                    chdir(cmd[1].c_str());
+            }
+
             if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
             if(cmd[0] == "exit" || cmd[0] == "quit") {
                     this->active = false;
