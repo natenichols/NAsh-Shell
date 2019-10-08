@@ -18,6 +18,7 @@ class NAsh {
         int processCounter;
 
     public:
+    
         NAsh() {active = true; processCounter = 0;};
         NAsh(char** envp) {
             //Populates Environment variables

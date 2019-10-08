@@ -9,10 +9,19 @@ std::string getPath(std::string s) {
 }
 void NAsh::printJobs() {
    for (auto it : jobs) {
-        std::cout << "[" << it.first << "] " << it.second.first << " " << it.second.second << std::endl;
+        std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << std::endl;
     }
 }
+
+void sigchild_handler(int sig)
+{
+  pid_t pid = wait(NULL);
+   std::cout << "[" <<  /*jobs[pid].first <<*/ "] " << pid  << " " << /*jobs[pid].second << */std::endl;
+   
+}
+
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
+            signal(SIGCHLD, sigchild_handler);
             if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
             if(cmd[0] == "exit" || cmd[0] == "quit") {
                     this->active = false;
@@ -31,7 +40,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             }
 
             pid_t pid = fork();
-
+            
             bool background = false;
             if (cmd[cmd.size()-1] == "&") {
                 background = true;
@@ -41,7 +50,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 for(int i = 0; i < cmd.size(); i++) {
                     strCMD += cmd[i] + ((i != cmd.size() - 1) ? " " : "");
                 }
-                jobs.insert({++processCounter, {pid, strCMD}});
+                jobs.insert({pid, {++processCounter, strCMD}});
             }
 
             if(pid == 0) {
@@ -63,10 +72,10 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     
                 if(cmd[0] == "jobs") {
                     printJobs();
-                    exit(0);
+                    exit(1);
                 }
                 execvp(args[0], args);
-                exit(0);
+                exit(1);
             }
             close(pipefd[1]);
             if(readPipe != -1) close(readPipe);
