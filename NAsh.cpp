@@ -62,6 +62,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     chdir(environmentVars["HOME"]);
                 else
                     chdir(cmd[1].c_str());
+                return -1;
             }
 
             if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
@@ -90,7 +91,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 cmd.pop_back();
 
                 std::string strCMD = "";
-                for(int i = 0; i < cmd.size(); i++) {
+                for(size_t i = 0; i < cmd.size(); i++) {
                     strCMD += cmd[i] + ((i != cmd.size() - 1) ? " " : "");
                 }
                 jobs.insert({pid, {++processCounter, strCMD}});
@@ -117,7 +118,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 }
 
                 execvp(args[0], args);
-                std::cout << "Error is: " << std::strerror(errno) << std::endl;
+                std::cout << "Error is: " << errno << std::endl;
                 exit(errno);
             }
             close(pipefd[1]);
