@@ -68,7 +68,7 @@ int main (int argc, char **argv, char **envp) {
     signal(SIGINT, sigintHandler);
     NAsh shell(envp);
 
-    while (shell.isActive()) {
+    while (shell.isActive() && !std::cin.eof()) {
         char buf[FILENAME_MAX];
         getcwd(buf, FILENAME_MAX );
         std::cout << "NAsh@" << buf << "> ";

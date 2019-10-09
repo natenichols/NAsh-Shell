@@ -1,11 +1,5 @@
- _________________
-< Welcome to NAsh >
- -----------------
-	\   ^__^
-	 \  (oo)\_______
-	    (__)\       )\/
-		||----w |
-		||     ||
-NAsh> 
-NAsh> 
-NAsh> 
+yes -a &
+yes -b &
+yes -c &
+jobs
+exit
