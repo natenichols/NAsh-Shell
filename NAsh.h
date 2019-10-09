@@ -1,3 +1,6 @@
+#ifndef NASH_H
+#define NASH_H
+
 #include<iostream>
 #include<vector>
 #include<unistd.h>
@@ -5,10 +8,7 @@
 #include<sys/wait.h>
 #include<unordered_map>
 #include<map>
-
-#ifndef NASH_H
-#define NASH_H
-
+#include<signal.h>
 
 class NAsh {
     private:
@@ -19,18 +19,8 @@ class NAsh {
         int processCounter;
 
     public:
-    
         NAsh() {active = true; processCounter = 0;};
-        NAsh(char** envp) {
-            //Populates Environment variables
-            for(char** i = envp; *i != 0; i++) {
-                char* envVar = strtok(*i, "=");
-                char* envVal = strtok(NULL, " ");
-                appendEnv(envVar, envVal);
-            }
-            active = true;
-            processCounter = 0;
-        }
+        NAsh(char** envp);
         bool isActive() {return active;}
         void printFromPipe(int pipe);
         void execute(char* cmd, char* args);

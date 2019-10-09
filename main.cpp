@@ -76,7 +76,9 @@ int main (int argc, char **argv, char **envp) {
 
         std::string strCMD;
         std::getline(std::cin, strCMD, '\n');
-        if(strCMD.length() == 0) continue;
+        if(strCMD.length() == 0) {
+            continue;
+        }
      
         //parse whole command line into  tokens
         std::vector<std::string> tokens = split(strCMD, '|');
@@ -84,7 +86,15 @@ int main (int argc, char **argv, char **envp) {
         for(auto c : tokens)  {
                 pipe = shell.execInChild(split(trim(c), ' '), pipe);
         }
-        shell.printFromPipe(pipe);
+        
+        auto stringLastToken = tokens[tokens.size() - 1];
+        auto t = split(trim(stringLastToken), ' ');
+        auto last = t[t.size() - 1];
+        if(last != "&") shell.printFromPipe(pipe);
+
+        std::cin.clear();
+        // std::cin.ignore();
+
     }
     std::cout << "\nExiting..." << std::endl;
 

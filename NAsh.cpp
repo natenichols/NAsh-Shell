@@ -1,7 +1,26 @@
 #include"NAsh.h"
 
-std::map<int, std::pair<int, std::string>>*  g_jobs;
+void printFinishedBackground(int sig);
 
+std::map<int, std::pair<int, std::string>>* g_jobs;
+
+NAsh::NAsh(char** envp) {
+    //Populates Environment variables
+    for(char** i = envp; *i != 0; i++) {
+        char* envVar = strtok(*i, "=");
+        char* envVal = strtok(NULL, " ");
+        appendEnv(envVar, envVal);
+    }
+    active = true;
+    processCounter = 0;
+
+    g_jobs = &jobs;
+    struct sigaction sa;
+    sa.sa_handler = &printFinishedBackground;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGCHLD, &sa, NULL);
+}
 std::string getPath(std::string s) {
     return s;
 }
@@ -10,23 +29,34 @@ void NAsh::printJobs() {
         std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << std::endl;
     }
 }
-void sigchild_handler(int sig)
-{
-    // int saved_errno = errno;
-    // while (waitpid((pid_t)(-1), 0, WNOHANG) > 0) {}
-    // errno = saved_errno;
 
-    // if(g_jobs->find(pid) != g_jobs->end())
-    //     std::cout << "[" <<  (*g_jobs)[pid].first << "] " << pid  << " " << (*g_jobs)[pid].second << std::endl;
-    // exit(1);
-   
+bool isRunning(pid_t pid) {   
+    if (0 == kill(pid, 0))
+        return true;
+    return false;
 }
 
+#include<unordered_set>
+void printFinishedBackground(int sig) {
+    while(waitpid(-1, 0, WNOHANG) > 0) {
+        // Wait for zombie processes]
+    }
+
+    std::unordered_set<int> finishedPIDS;
+    for (auto it : (*g_jobs)) {
+        if(!isRunning(it.first)) {
+            std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << "ENDED" << std::endl;
+            finishedPIDS.insert(it.first);
+        }
+    }
+    for(auto ended : finishedPIDS) {
+        g_jobs->erase(ended);
+    }
+}
+
+
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
-
-            g_jobs = &jobs;
-            signal(SIGCHLD,sigchild_handler);
-
+ 
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) 
                     chdir(environmentVars["HOME"]);
@@ -44,7 +74,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 cmd[0] = getPath(cmd[0]);
             }
 
-            int pipefd[2], status;
+            int pipefd[2];
 
             if(pipe(pipefd) == -1) {
                 std::cout << "Pipe failed to build" << std::endl;
@@ -52,7 +82,8 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             }
 
             pid_t pid = fork();
-            
+            int status;
+
             bool background = false;
             if (cmd[cmd.size()-1] == "&") {
                 background = true;
@@ -87,23 +118,22 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     exit(0);
                 }
                 execvp(args[0], args);
-                exit(0);
+                exit(1);
             }
             close(pipefd[1]);
             if(readPipe != -1) close(readPipe);
 
-            if (!background && (waitpid(pid, &status, 0)) == -1) {
-                fprintf(stderr, "Process encountered an error. ERROR%d", errno);
-                exit(1);
-            } else if(background) {
+            if (background) {
                 std::cout << "[" << processCounter << "] " << pid << " running in background" << std::endl;
+            } else {
+                waitpid(pid, &status, 0);
             }
             return pipefd[0];
 }
 
 void NAsh::printFromPipe(int pipe) {
     if(pipe == -1) return;
-    int pid, status;
+    int pid;
     if((pid = fork()) == 0) {
         // Child
         dup2(pipe, STDIN_FILENO);
@@ -116,9 +146,5 @@ void NAsh::printFromPipe(int pipe) {
         }
         exit(0);
     }
-
-    if ((waitpid(pid, &status, 0)) == -1) {
-        fprintf(stderr, "Print Process encountered an error. ERROR%d", errno);
-        exit(1);
-    }
+   pause();
 }
