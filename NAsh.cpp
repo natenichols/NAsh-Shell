@@ -45,7 +45,8 @@ void printFinishedBackground(int sig) {
     std::unordered_set<int> finishedPIDS;
     for (auto it : (*g_jobs)) {
         if(!isRunning(it.first)) {
-            std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << "ENDED" << std::endl;
+            if(finishedPIDS.empty()) std::cout << std::endl;
+            std::cout << "[" << it.second.first << "] " << it.first  << " finished " << it.second.second << std::endl;
             finishedPIDS.insert(it.first);
         }
     }
@@ -56,7 +57,6 @@ void printFinishedBackground(int sig) {
 
 
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
- 
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) 
                     chdir(environmentVars["HOME"]);
@@ -107,31 +107,32 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 close(pipefd[0]);
                 close(pipefd[1]);
 
-               
-
                 char** args = new char*[cmd.size()+1];
                 for(size_t x = 0; x < cmd.size(); x++) 
                     args[x] = (char*)cmd[x].c_str();
-                    
+                args[cmd.size()] = NULL;
                 if(cmd[0] == "jobs") {
                     printJobs();
                     exit(0);
                 }
+
                 execvp(args[0], args);
-                exit(1);
+                std::cout << "Error is: " << std::strerror(errno) << std::endl;
+                exit(errno);
             }
             close(pipefd[1]);
-            if(readPipe != -1) close(readPipe);
 
             if (background) {
                 std::cout << "[" << processCounter << "] " << pid << " running in background" << std::endl;
             } else {
                 waitpid(pid, &status, 0);
             }
+            
             return pipefd[0];
 }
 
 void NAsh::printFromPipe(int pipe) {
+    int status;
     if(pipe == -1) return;
     int pid;
     if((pid = fork()) == 0) {
@@ -146,5 +147,5 @@ void NAsh::printFromPipe(int pipe) {
         }
         exit(0);
     }
-   pause();
+   waitpid(pid, &status, 0);
 }

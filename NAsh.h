@@ -9,6 +9,7 @@
 #include<unordered_map>
 #include<map>
 #include<signal.h>
+#include<sstream>
 
 class NAsh {
     private:

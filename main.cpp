@@ -3,7 +3,6 @@
 #include <string.h>
 #include <signal.h>
 #include <vector>
-
 #include<sstream>
 
 std::vector<std::string> split(std::string str, char delim) {
@@ -72,13 +71,11 @@ int main (int argc, char **argv, char **envp) {
     while (shell.isActive()) {
         char buf[FILENAME_MAX];
         getcwd(buf, FILENAME_MAX );
-        std::cout << "\nNAsh@" << buf << "> ";
+        std::cout << "NAsh@" << buf << "> ";
 
         std::string strCMD;
         std::getline(std::cin, strCMD, '\n');
-        if(strCMD.length() == 0) {
-            continue;
-        }
+        if(strCMD.length() == 0) continue;
      
         //parse whole command line into  tokens
         std::vector<std::string> tokens = split(strCMD, '|');
@@ -92,8 +89,9 @@ int main (int argc, char **argv, char **envp) {
         auto last = t[t.size() - 1];
         if(last != "&") shell.printFromPipe(pipe);
 
-        std::cin.clear();
-        // std::cin.ignore();
+        while(waitpid(-1, 0, WNOHANG) > 0) {
+            // Wait for zombie processes]
+        }
 
     }
     std::cout << "\nExiting..." << std::endl;
