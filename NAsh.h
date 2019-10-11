@@ -19,8 +19,7 @@ class NAsh {
         int processCounter;
 
     public:
-        NAsh() {active = true; processCounter = 0;};
-        NAsh(char** envp);
+        NAsh();
         bool isActive() {return active;}
         void printFromPipe(int pipe);
         void execute(char* cmd, char* args);
