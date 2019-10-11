@@ -4,7 +4,7 @@ void printFinishedBackground(int sig);
 
 std::map<int, std::pair<int, std::string>>* g_jobs;
 
-NAsh::NAsh(char** envp) {
+NAsh::NAsh() {
     //Populates Environment variables
     active = true;
     processCounter = 0;

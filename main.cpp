@@ -52,7 +52,7 @@ void welcome() {
     std::cout << "\t\t||     ||" << std::endl;
 }
 
-int main (int argc, char **argv, char **envp) {
+int main (int argc, char **argv) {
     if(argc > 1 && (strncmp(argv[1], "-v", 3) == 0 || strncmp(argv[1], "--version", 10) == 0)) {
         std::cout << "v0.0.1: Nathan Nichols and Andre Kurait: NAsh" << std::endl;
         return 0;
@@ -66,7 +66,7 @@ int main (int argc, char **argv, char **envp) {
 
     welcome();
     signal(SIGINT, sigintHandler);
-    NAsh shell(envp);
+    NAsh shell;
 
     while (shell.isActive() && !std::cin.eof()) {
         char buf[FILENAME_MAX];
