@@ -59,6 +59,11 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     chdir(cmd[1].c_str());
                 return -1;
             }
+            if(cmd[0] == "set") {
+                char * envVar = const_cast<char*> (cmd[1].c_str());
+                putenv(envVar);
+                return -1;
+            }
 
             if(cmd.size() == 0 || cmd[0].length() == 0) return -1;
             if(cmd[0] == "exit" || cmd[0] == "quit") {
