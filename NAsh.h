@@ -13,7 +13,6 @@
 
 class NAsh {
     private:
-        std::unordered_map<std::string, char*> environmentVars;
         std::map<int, std::pair<int, std::string>> jobs; 
         int BSIZE = 256;
         bool active;
@@ -26,14 +25,6 @@ class NAsh {
         void printFromPipe(int pipe);
         void execute(char* cmd, char* args);
         int execInChild(std::vector<std::string> cmd, int readPipe = -1);
-        void appendEnv(char* envVar, char* envVal) {
-            environmentVars[envVar] = envVal;
-        }
-        void lsEnv() {
-            for(auto x : environmentVars) {
-                std::cout << x.first << "=" << x.second << std::endl; 
-            }
-        }
         void printJobs();
 };
 #endif
