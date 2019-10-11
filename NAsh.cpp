@@ -56,7 +56,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 if(cmd.size() == 1) 
                     chdir(getenv("HOME"));
                 else
-                    chdir(cmd[1].c_str());
+                    if(chdir(cmd[1].c_str())) std::cout << "Invalid directory" << std::endl;
                 return -1;
             }
             if(cmd[0] == "set") {
