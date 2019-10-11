@@ -80,8 +80,24 @@ int main (int argc, char **argv) {
         //parse whole command line into  tokens
         std::vector<std::string> tokens = split(strCMD, '|');
         int pipe = -1;
-        for(auto c : tokens)  {
-                pipe = shell.execInChild(split(trim(c), ' '), pipe);
+        for(auto token : tokens)  {
+                auto token_trim = trim(token);
+                auto token_input = split(token_trim, '<');
+                if(token_input.size() > 1) {
+                    std::string inputFileName = trim(token_input[1]);
+                    pipe = shell.createPipeFromFile(inputFileName);
+                }
+                auto token_output = split(token_input[0], '>');
+                std::string outputFileName = (token_output.size() > 1) ? trim(token_output[1]) : "";
+                if(outputFileName != "") {
+                    shell.createFile(outputFileName);
+                }
+                auto token_final = split(token_output[0], ' ');
+                pipe = shell.execInChild(token_final, pipe);
+                if(outputFileName != "") {
+                    pipe = shell.overwriteFileFromPipe(outputFileName,pipe);
+                }
+
         }
         
         auto stringLastToken = tokens[tokens.size() - 1];

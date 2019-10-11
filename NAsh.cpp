@@ -1,7 +1,6 @@
 #include"NAsh.h"
 
 void printFinishedBackground(int sig);
-
 std::map<int, std::pair<int, std::string>>* g_jobs;
 
 NAsh::NAsh() {
@@ -16,9 +15,7 @@ NAsh::NAsh() {
     sa.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &sa, NULL);
 }
-std::string getPath(std::string s) {
-    return s;
-}
+
 void NAsh::printJobs() {
    for (auto it : jobs) {
         std::cout << "[" << it.second.first << "] " << it.first  << " " << it.second.second << std::endl;
@@ -31,7 +28,6 @@ bool isRunning(pid_t pid) {
     return false;
 }
 
-#include<unordered_set>
 void printFinishedBackground(int sig) {
     while(waitpid(-1, 0, WNOHANG) > 0) {
         // Wait for zombie processes]
@@ -54,10 +50,16 @@ void printFinishedBackground(int sig) {
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) {
-                    if(chdir(getenv("HOME"))) std::cout << "nash: cd: " << getenv("HOME") << ": No such file or directory" << std::endl;
+                    char* dir = getenv("HOME");
+                    if(dir == nullptr) {
+                        std::cout << "NAsh: cd: HOME not set\n";
+                    }
+                    else if(chdir(dir)) {
+                        std::cout << "NAsh: cd: " << dir << ": No such file or directory" << std::endl;
+                    }
                 }
                 else
-                    if(chdir(cmd[1].c_str())) std::cout << "nash: cd: " << cmd[1] <<": No such file or directory" << std::endl;
+                    if(chdir(cmd[1].c_str())) std::cout << "NAsh: cd: " << cmd[1] <<": No such file or directory" << std::endl;
                 return -1;
             }
             if(cmd[0] == "set") {
@@ -71,10 +73,6 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             if(cmd[0] == "exit" || cmd[0] == "quit") {
                     this->active = false;
                     return -1;
-            }
-            
-            if(cmd[0][0] != '/') {
-                cmd[0] = getPath(cmd[0]);
             }
 
             int pipefd[2];
@@ -130,7 +128,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 }
 
                 execvp(args[0], args);
-                std::cout << "Error is: " << errno << std::endl;
+                std::cout << "NAsh: " << cmd[0] << ": " << strerror(errno) << std::endl;
                 exit(errno);
             }
             close(pipefd[1]);
@@ -150,15 +148,47 @@ void NAsh::printFromPipe(int pipe) {
     int pid;
     if((pid = fork()) == 0) {
         // Child
-        dup2(pipe, STDIN_FILENO);
-        close(pipe);
-        
         char buffer[BSIZE];
         int bytes;
-        while ( (bytes = read(STDIN_FILENO, buffer, BSIZE)) > 0) {
+        while ( (bytes = read(pipe, buffer, BSIZE)) > 0) {
             write(STDOUT_FILENO, buffer, bytes);
         }
         exit(0);
     }
    waitpid(pid, &status, 0);
+}
+
+int NAsh::createPipeFromFile(std::string fileName) {
+    return -1;
+}
+int NAsh::overwriteFileFromPipe(std::string fileName, int readPipe) {
+    if(readPipe == -1 || fileName == "") {
+        std::cout << "Invalid Command\n";
+        return -1;
+    }
+
+    pid_t pid = fork();
+    int status;
+    if(pid == 0) {
+        // Child
+        freopen (fileName.c_str(),"w",stdout);
+
+        int bytes; 
+        char buffer[BSIZE];
+        while ( (bytes = read(readPipe, buffer, BSIZE)) > 0) {
+            write(STDOUT_FILENO, buffer, bytes);
+        }
+
+        fclose(stdout);
+        close(readPipe);
+        exit(0);
+    }
+    close(readPipe);
+    waitpid(pid, &status, 0);
+    return 0;
+}
+bool NAsh::createFile(std::string fileName) {
+    std::ofstream myfile;
+    myfile.open(fileName);
+    return true;
 }

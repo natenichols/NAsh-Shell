@@ -9,7 +9,10 @@
 #include<unordered_map>
 #include<map>
 #include<signal.h>
+#include <stdlib.h>
+#include <unordered_set>
 #include<sstream>
+#include<fstream>
 
 class NAsh {
     private:
@@ -17,13 +20,15 @@ class NAsh {
         int BSIZE = 256;
         bool active;
         int processCounter;
-
+        void printJobs();
     public:
         NAsh();
         bool isActive() {return active;}
         void printFromPipe(int pipe);
-        void execute(char* cmd, char* args);
         int execInChild(std::vector<std::string> cmd, int readPipe = -1);
-        void printJobs();
+        int createPipeFromFile(std::string fileName);
+        int overwriteFileFromPipe(std::string fileName, int readPipe);
+        bool createFile(std::string fileName);
+
 };
 #endif
