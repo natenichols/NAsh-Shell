@@ -57,6 +57,7 @@ void printFinishedBackground(int sig) {
 
 
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
+            for(auto c : cmd) std::cout << c << " ";
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) 
                     chdir(environmentVars["HOME"]);
@@ -96,7 +97,6 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 }
                 jobs.insert({pid, {++processCounter, strCMD}});
             }
-
             if(pid == 0) {
                 // Child
                 if(readPipe != -1) {
@@ -108,6 +108,17 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 close(pipefd[0]);
                 close(pipefd[1]);
 
+                if(cmd[0] == "kill") {
+                    int givenPID = stoi(cmd[2]);
+                    for(auto it : jobs) {
+                        if(it.second.first == givenPID) {
+                            kill(it.first, stoi(cmd[1]));
+                            exit(0);
+                        }
+                    }
+                    std::cout << "Invalid JobID Specified\n";
+                    exit(1);
+                }
                 char** args = new char*[cmd.size()+1];
                 for(size_t x = 0; x < cmd.size(); x++) 
                     args[x] = (char*)cmd[x].c_str();
