@@ -53,10 +53,11 @@ void printFinishedBackground(int sig) {
 
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             if(cmd[0] == std::string("cd")) {
-                if(cmd.size() == 1) 
-                    chdir(getenv("HOME"));
+                if(cmd.size() == 1) {
+                    if(chdir(getenv("HOME"))) std::cout << "nash: cd: " << getenv("HOME") << ": No such file or directory" << std::endl;
+                }
                 else
-                    if(chdir(cmd[1].c_str())) std::cout << "Invalid directory" << std::endl;
+                    if(chdir(cmd[1].c_str())) std::cout << "nash: cd: " << cmd[1] <<": No such file or directory" << std::endl;
                 return -1;
             }
             if(cmd[0] == "set") {
