@@ -61,7 +61,8 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 return -1;
             }
             if(cmd[0] == "set") {
-                char* envVar = const_cast<char*>(cmd[1].c_str());
+                char* envVar = new char[cmd[1].length()+1];
+                strcpy(envVar, cmd[1].c_str());
                 putenv(envVar);
                 return -1;
             }
