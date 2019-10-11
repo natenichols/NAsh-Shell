@@ -36,10 +36,7 @@ programs. Specifically, the following features should be implemented in NAsh.
     ```cpp
         int main (int argc, char **argv, char **envp)
     ```
-    * NAsh should support (at least) two built-in variables: PATH, which is used to record the
-paths to search for executables, and HOME, the user’s home directory. PATH may contain
-multiple directories (separated by :). For example, The command ‘set PATH=/usr/bin:/bin’
-in NAsh should set the variable PATH to contain two directories, */usr/bin* and */bin*.
+    * NAsh should support (at least) two built-in variables: PATH, which is used to record the paths to search for executables, and HOME, the user’s home directory. PATH may contain multiple directories (separated by :). For example, The command ‘set PATH=/usr/bin:/bin’ in NAsh should set the variable PATH to contain two directories, */usr/bin* and */bin*.
     * Child processes should inherit the environment variables (in C, various flavors of the exec system call allow you to pass the environment to child processes)
     * *cd **dir*** to change the current working directory to **dir**. *cd* with no arguments should change to the directory in the HOME environment variable. Explore the use of **chdir()** to change working directoty.
     * *quit* and *exit* to exit NAsh.
@@ -76,7 +73,7 @@ Partial credits will be given for incomplete efforts. However, a program that ca
    6. *PATH* works properly. Give error messages when the executable is not found (10)
    7. Child processes inherit the environment (5)
    8. Allow background/foreground execution (&) (5)
-   9. Printing/reporting of background processes, (including thejobscommand) (10)
+   9. Printing/reporting of background processes, (including the *jobs* command) (10)
    10. Allow file redirection (> and <) (5)
    11. Allow (1) pipe (|) (10)
    12. Supports reading commands from prompt and from file (10)
