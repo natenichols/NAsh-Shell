@@ -6,11 +6,6 @@ std::map<int, std::pair<int, std::string>>* g_jobs;
 
 NAsh::NAsh(char** envp) {
     //Populates Environment variables
-    for(char** i = envp; *i != 0; i++) {
-        char* envVar = strtok(*i, "=");
-        char* envVal = strtok(NULL, " ");
-        appendEnv(envVar, envVal);
-    }
     active = true;
     processCounter = 0;
 
@@ -57,10 +52,9 @@ void printFinishedBackground(int sig) {
 
 
 int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
-            for(auto c : cmd) std::cout << c << " ";
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) 
-                    chdir(environmentVars["HOME"]);
+                    chdir(getenv("HOME"));
                 else
                     chdir(cmd[1].c_str());
                 return -1;
