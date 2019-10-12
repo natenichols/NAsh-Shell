@@ -1,0 +1,10 @@
+commands.txt
+main.cpp
+main.o
+Makefile
+nash
+NAsh.cpp
+NAsh.h
+NAsh.o
+output.txt
+README.md

@@ -159,7 +159,22 @@ void NAsh::printFromPipe(int pipe) {
 }
 
 int NAsh::createPipeFromFile(std::string fileName) {
-    return -1;
+    std::ifstream inFile(fileName);
+    std::string line;
+
+    int pipefd[2];
+    if(pipe(pipefd) == -1) {
+        std::cout << "Pipe failed" << std::endl;
+        return -1;
+    }
+    
+    while(std::getline(inFile, line)) {
+        line.push_back('\n');
+        write(pipefd[1], line.c_str(), line.size());
+    }
+
+    close(pipefd[1]);
+    return pipefd[0];
 }
 int NAsh::overwriteFileFromPipe(std::string fileName, int readPipe) {
     if(readPipe == -1 || fileName == "") {
@@ -185,7 +200,7 @@ int NAsh::overwriteFileFromPipe(std::string fileName, int readPipe) {
     }
     close(readPipe);
     waitpid(pid, &status, 0);
-    return 0;
+    return -1;
 }
 bool NAsh::createFile(std::string fileName) {
     std::ofstream myfile;
