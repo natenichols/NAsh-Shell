@@ -80,8 +80,9 @@ int main (int argc, char **argv) {
         //parse whole command line into  tokens
         std::vector<std::string> tokens = split(strCMD, '|');
         int pipe = -1;
-        for(auto token : tokens)  {
-                auto token_trim = trim(token);
+        for(int i = 0; i < tokens.size(); i++) { 
+                std::string token = tokens[i];
+                std::string token_trim = trim(token);
                 auto token_input = split(token_trim, '<');
                 if(token_input.size() > 1) {
                     std::string inputFileName = trim(token_input[1]);
@@ -93,17 +94,18 @@ int main (int argc, char **argv) {
                     shell.createFile(outputFileName);
                 }
                 auto token_final = split(token_output[0], ' ');
-                pipe = shell.execInChild(token_final, pipe);
+                if(i == tokens.size() - 1) shell.execInChild(token_final, pipe, STDOUT_FILENO);
+                else pipe = shell.execInChild(token_final, pipe);
                 if(outputFileName != "") {
                     pipe = shell.overwriteFileFromPipe(outputFileName,pipe);
                 }
 
         }
         
-        auto stringLastToken = tokens[tokens.size() - 1];
-        auto t = split(trim(stringLastToken), ' ');
-        auto last = t[t.size() - 1];
-        if(last != "&") shell.printFromPipe(pipe);
+        // auto stringLastToken = tokens[tokens.size() - 1];
+        // auto t = split(trim(stringLastToken), ' ');
+        // auto last = t[t.size() - 1];
+        // if(last != "&") shell.printFromPipe(pipe);
 
         while(waitpid(-1, 0, WNOHANG) > 0) {
             // Wait for zombie processes]

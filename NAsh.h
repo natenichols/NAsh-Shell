@@ -24,8 +24,7 @@ class NAsh {
     public:
         NAsh();
         bool isActive() {return active;}
-        void printFromPipe(int pipe);
-        int execInChild(std::vector<std::string> cmd, int readPipe = -1);
+        int execInChild(std::vector<std::string> cmd, int readPipe = -1, int writePipe = -1);
         int createPipeFromFile(std::string fileName);
         int overwriteFileFromPipe(std::string fileName, int readPipe);
         bool createFile(std::string fileName);

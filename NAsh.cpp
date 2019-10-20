@@ -47,7 +47,7 @@ void printFinishedBackground(int sig) {
 }
 
 
-int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
+int NAsh::execInChild(std::vector<std::string> cmd, int readPipe, int writePipe) {
             if(cmd[0] == std::string("cd")) {
                 if(cmd.size() == 1) {
                     char* dir = getenv("HOME");
@@ -76,8 +76,11 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             }
 
             int pipefd[2];
-
-            if(pipe(pipefd) == -1) {
+            if(writePipe != -1) {
+                pipefd[1] = writePipe;
+                pipefd[0] = -1;
+            }
+            else if(pipe(pipefd) == -1) {
                 std::cout << "Pipe failed to build" << std::endl;
                 exit(1);
             }
@@ -102,10 +105,12 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                     dup2(readPipe, STDIN_FILENO);
                     close(readPipe);
                 }
-                dup2(pipefd[1], STDOUT_FILENO);
+                if(pipefd[1] != STDOUT_FILENO) { 
+                    dup2(pipefd[1], STDOUT_FILENO);
+                    if(pipefd[0] != -1) close(pipefd[0]);
+                    close(pipefd[1]);
+                }
 
-                close(pipefd[0]);
-                close(pipefd[1]);
 
                 if(cmd[0] == "kill") {
                     int givenPID = stoi(cmd[2]);
@@ -131,7 +136,7 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
                 std::cout << "NAsh: " << cmd[0] << ": " << strerror(errno) << std::endl;
                 exit(errno);
             }
-            close(pipefd[1]);
+            if(pipefd[1] != STDOUT_FILENO) close(pipefd[1]);
 
             if (background) {
                 std::cout << "[" << processCounter << "] " << pid << " running in background" << std::endl;
@@ -140,22 +145,6 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe) {
             }
             
             return pipefd[0];
-}
-
-void NAsh::printFromPipe(int pipe) {
-    int status;
-    if(pipe == -1) return;
-    int pid;
-    if((pid = fork()) == 0) {
-        // Child
-        char buffer[BSIZE];
-        int bytes;
-        while ( (bytes = read(pipe, buffer, BSIZE)) > 0) {
-            write(STDOUT_FILENO, buffer, bytes);
-        }
-        exit(0);
-    }
-   waitpid(pid, &status, 0);
 }
 
 int NAsh::createPipeFromFile(std::string fileName) {
