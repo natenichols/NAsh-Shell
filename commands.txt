@@ -3,5 +3,4 @@ sleep 3 &
 sleep 1 &
 jobs
 sleep 4
-jobs
 exit
