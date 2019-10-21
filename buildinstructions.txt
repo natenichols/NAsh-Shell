@@ -1,0 +1,2 @@
+To build type "make"
+To run type "./nash" or "./quash" after building
