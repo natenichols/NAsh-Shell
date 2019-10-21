@@ -4,6 +4,7 @@
 # Executables
 *.out
 nash
+quash
 
 # VS Code
 .vscode

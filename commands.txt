@@ -1,5 +1,7 @@
-yes -a &
-yes -b &
-yes -c &
+sleep 2 &
+sleep 3 &
+sleep 1 &
+jobs
+sleep 4
 jobs
 exit

@@ -44,6 +44,11 @@ void printFinishedBackground(int sig) {
     for(auto ended : finishedPIDS) {
         g_jobs->erase(ended);
     }
+    if(!finishedPIDS.empty()) {
+        char buf[FILENAME_MAX];
+        getcwd(buf, FILENAME_MAX );
+        std::cout << "NAsh@" << buf << "> " << std::flush;
+    }
 }
 
 
@@ -104,6 +109,8 @@ int NAsh::execInChild(std::vector<std::string> cmd, int readPipe, int writePipe)
                 if(readPipe != -1) {
                     dup2(readPipe, STDIN_FILENO);
                     close(readPipe);
+                } else if (background) {
+                    close(STDIN_FILENO);
                 }
                 if(pipefd[1] != STDOUT_FILENO) { 
                     dup2(pipefd[1], STDOUT_FILENO);
