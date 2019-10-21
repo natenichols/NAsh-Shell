@@ -6,4 +6,4 @@ main.o: main.cpp NAsh.h
 NAsh.o: NAsh.h NAsh.cpp
 	g++ -std=c++11 -g -Wall -c NAsh.cpp
 clean: 
-	rm *.o nash
+	rm *.o nash quash
